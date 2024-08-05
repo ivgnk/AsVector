@@ -1,9 +1,8 @@
 """
-Flet Examples
+Flet Examples from
+26.06.2023 Гайд по Flet: приступая к работе. Создание приложений на Python
+https://www.ixbt.com/live/sw/gayd-po-flet-pristua.html
 """
-
-# 26.06.2023 Гайд по Flet: приступая к работе. Создание приложений на Python
-# https://www.ixbt.com/live/sw/gayd-po-flet-pristua.html
 
 import time
 import flet as ft
@@ -78,6 +77,9 @@ def tst_03_2():
             page.update()
             time.sleep(1)
 
+    ft.app(target=main)  # , view=ft.WEB_BROWSER
+
+
 def tst_04():
     def main(page):
         def add_clicked(e):
@@ -91,6 +93,80 @@ def tst_04():
 
     ft.app(target=main) # , view=ft.WEB_BROWSER
 
+def tst_05():
+    def main(page: ft.Page):
+        # add/update controls on Page
+        # first_name = ft.TextField()
+        # last_name = ft.TextField()
+        # first_name.disabled = True
+        # last_name.disabled = True
+        # page.add(first_name, last_name)
+
+        first_name = ft.TextField()
+        last_name = ft.TextField()
+        c = ft.Column(controls=[
+            first_name,
+            last_name
+        ])
+        c.disabled = True
+        page.add(c)
+
+    ft.app(target=main) # , view=ft.WEB_BROWSER
+
+def tst_06():
+    def main(page: ft.Page):
+        first_name = ft.TextField(label="First name", autofocus=True)
+        last_name = ft.TextField(label="Last name")
+        greetings = ft.Column()
+
+        def btn_click(e):
+            greetings.controls.append(ft.Text(f"Hello, {first_name.value} {last_name.value}!"))
+            first_name.value = ""
+            last_name.value = ""
+            page.update()
+            first_name.focus()
+
+        page.add(
+            first_name,
+            last_name,
+            ft.ElevatedButton("Say hello!", on_click=btn_click),
+            greetings,
+        )
+
+    ft.app(target=main)
+
+def tst_06_with_ref():
+    def main(page):
+        first_name = ft.Ref[ft.TextField]()
+        last_name = ft.Ref[ft.TextField]()
+        greetings = ft.Ref[ft.Column]()
+
+        def btn_click(e):
+            greetings.current.controls.append(
+                ft.Text(f"Hello, {first_name.current.value} {last_name.current.value}!")
+            )
+            first_name.current.value = ""
+            last_name.current.value = ""
+            page.update()
+            first_name.current.focus()
+
+        page.add(
+            ft.TextField(ref=first_name, label="First name", autofocus=True),
+            ft.TextField(ref=last_name, label="Last name"),
+            ft.ElevatedButton("Say hello!", on_click=btn_click),
+            ft.Column(ref=greetings),
+        )
+
+    ft.app(target=main)
 
 if __name__ == "__main__":
-    tst_04()
+    # tst_00() # +
+    # tst_01() # +
+    # tst_02() # +
+    # tst_03() # +
+    # tst_03_1() # +
+    # tst_03_2()  # +
+    # tst_04() # +
+    # tst_05() # +
+    # tst_06() # +
+    tst_06_with_ref()
